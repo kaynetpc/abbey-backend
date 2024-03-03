@@ -1,11 +1,12 @@
 import express from 'express';
 import { ResponseService } from '../../response/responseService';
 import { AuthService } from '../service/AuthService';
+import { AuthRoute } from '../route/index';
 
 const AuthController = express.Router();
 
 // register user
-AuthController.post('/register', async (req, res) => {
+AuthController.post(AuthRoute.register, async (req, res) => {
     if(!req?.body?.email ||!req?.body?.password) {
         ResponseService.send({response: res, hasError: true, statusCode: 400, data: null, message: "Email and password are required"});
         return;
@@ -16,7 +17,7 @@ AuthController.post('/register', async (req, res) => {
 })
 
 // Sign in / Login user
-AuthController.post('/login', async (req, res) => {
+AuthController.post(AuthRoute.login, async (req, res) => {
     // check if login credentials is supplied and valid    
     if(!req?.body?.email || !req?.body?.password) {
         ResponseService.send({response: res, hasError: true, statusCode: 400, data: null, message: "Email and password are required"});

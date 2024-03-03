@@ -12,6 +12,6 @@ export const AppConfigs = {
   MONGODB_URI: getEnv('MONGODB_URI', ''),
   MONGODB_DEV_URI: getEnv('MONGODB_DEV_URI', ''),
   // keys
-  JWT_SECRET: getEnv('TOKEN_KEY', "gfgvhjkl"),
+  JWT_SECRET: getEnv('JWT_SECRET', "gfgvhjkl"),
   ACCESS_TOKEN_EXPIRATION_TIME: getEnv('ACCESS_TOKEN_EXPIRATION_TIME', "1d"),
 };

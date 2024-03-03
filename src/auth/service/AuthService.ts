@@ -31,6 +31,7 @@ export class AuthService {
         user: {
           id: user.id,
         },
+        tokenType: "access",
       };
 
       const accessToken = generateAccessToken(payload);
@@ -64,11 +65,10 @@ export class AuthService {
         user: {
           id: isExist.id,
         },
+        tokenType: "access",
       };
 
       const accessToken = generateAccessToken(payload)
-
-      isExist.accessToken = accessToken;
       
       await isExist.save();
       // return access token and refreshToken

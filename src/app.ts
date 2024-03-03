@@ -5,6 +5,7 @@ import cors from 'cors';
 import session from 'express-session';
 import AppController from './controller/AppController';
 import { AppConfigs } from './config/app';
+import { authMiddleware } from './middleware/auth/auth.middleware';
 
 const App = express();
 
@@ -23,6 +24,6 @@ App.use(
   })
 );
 
-App.use(AppConfigs.SERVER_PATH, AppController);
+App.use(AppConfigs.SERVER_PATH, authMiddleware, AppController);
 
 export default App;
