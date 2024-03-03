@@ -4,8 +4,7 @@ import mongoose from 'mongoose';
 // Database connection options
 export const connectDB = async () => {
   try {
-    const DB_URL = AppConfigs.IS_DEV? AppConfigs.MONGODB_DEV_URI: AppConfigs.MONGODB_URI;
-    await mongoose.connect(DB_URL);
+    await mongoose.connect(AppConfigs.MONGODB_URI);
     AppConfigs.IS_DEV && console.log('Connected to the database');
     return true;
   } catch (e) {
