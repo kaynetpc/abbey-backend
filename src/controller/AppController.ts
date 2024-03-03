@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
 import express from 'express';
+import AuthController from '../auth/controller/AuthController';
 
 const AppController = express.Router();
 
-AppController.use("/", (req: Request, res: Response) => {
-  res.json({ message: 'Abbey User Data' });
-});
+// auth controller
+AppController.use("/auth", AuthController);
 
 
 export default AppController;

@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import session from 'express-session';
 import AppController from './controller/AppController';
+import { AppConfigs } from './config/app';
 
 const App = express();
 
@@ -22,6 +23,6 @@ App.use(
   })
 );
 
-App.use('/api', AppController);
+App.use(AppConfigs.SERVER_PATH, AppController);
 
 export default App;

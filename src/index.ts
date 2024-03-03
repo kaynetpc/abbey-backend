@@ -1,8 +1,11 @@
-import App from "./app";
+// import http from 'http';
+import App from './app';
+import { AppConfigs } from './config/app';
+import { connectDB }  from './config/database';
 
+const {PORT, SERVER_PATH} = AppConfigs
 
-const PORT = process.env.PORT || 5000;
-
-App.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+App.listen(PORT, async () => {
+    await connectDB();
+    console.log(`Server is now running on port ${PORT} at ${SERVER_PATH}`);
 });
