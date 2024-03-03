@@ -74,7 +74,7 @@ export class ProfileService {
           lastName: profileInfo?.lastName || "",
         });
         await newProfile.save();
-        return { message: "User profile", hasError: false, statusCode: 200, data: new ProfileResDto(newProfile, user.email)};
+        return { message: "Your Profile has been updated Successfully", hasError: false, statusCode: 200, data: new ProfileResDto(newProfile, user.email)};
       }
 
       // update user profile
@@ -85,7 +85,7 @@ export class ProfileService {
       await user.save();
       await profile.save();
       return {
-        message: "User profile", hasError: false, statusCode: 200, data: new ProfileResDto(profile, user.email)};
+        message: "Your Profile has been updated Successfully", hasError: false, statusCode: 200, data: new ProfileResDto(profile, user.email)};
     } catch (error: any) {
       AppConfigs.IS_DEV && console.error(error?.message);
       return {
@@ -100,7 +100,7 @@ export class ProfileService {
   // follow a user by the userId
   static async followUser(
     userId: string,
-    followerId: string
+    followingId: string
   ): Promise<IProfileResponse> {
     try {
       // get user profile
@@ -114,11 +114,11 @@ export class ProfileService {
         };
       }
       // followerId is not thesame as userId
-      if (userId === followerId) {
+      if (profile.id === followingId) {
         return { message: "You cannot follow yourself",  hasError: true,  statusCode: 400, data: null};
       }
       // get follower profile
-      const followingProfile = await ProfileModel.findById(followerId);
+      const followingProfile = await ProfileModel.findById(followingId);
       if (!followingProfile) {
         return {
           message: "Follower not found",
@@ -129,7 +129,7 @@ export class ProfileService {
       }
       // check if user already follower
       const isFollowing = profile.following.find(
-        (follower) => follower.id === followerId
+        (follower) => follower.id === followingId
       );
       if (isFollowing) {
         return {
@@ -141,10 +141,15 @@ export class ProfileService {
       }
       // add follower to profile
       const newFollowing = {
-        id: followerId,
+        id: followingId,
         firstName: followingProfile.firstName,
       };
       profile.following.push(newFollowing);
+      followingProfile.followers.push({
+        id: profile.id,
+        firstName: profile.firstName
+      });
+      await followingProfile.save();
       await profile.save();
 
       return {
@@ -163,10 +168,12 @@ export class ProfileService {
       };
     }
   }
+
+
   // unfollow a user by the userId
   static async unfollowUser(
     userId: string,
-    followerId: string
+    followingId: string
   ): Promise<IProfileResponse> {
     try {
       // get user profile
@@ -179,9 +186,18 @@ export class ProfileService {
           data: null,
         };
       }
+      // check if followingId is not userId
+      if(followingId === profile.id) {
+        return {
+          message: "You cannot unfollow yourself",
+          hasError: true,
+          statusCode: 400,
+          data: null
+        };
+      }
       // get follower profile
-      const followerProfile = await ProfileModel.findById(followerId);
-      if (!followerProfile) {
+      const followingProfile = await ProfileModel.findById(followingId);
+      if (!followingProfile) {
         return {
           message: "Follower not found",
           hasError: true,
@@ -190,10 +206,10 @@ export class ProfileService {
         };
       }
       // check if user already follower
-      const isFollower = profile.following.find(
-        (follower) => follower.id === followerId
+      const isFollowing = profile.following.find(
+        (follower) => follower.id === followingId
       );
-      if (!isFollower) {
+      if (!isFollowing) {
         return {
           message: "You are not following this user",
           hasError: true,
@@ -203,11 +219,17 @@ export class ProfileService {
       }
       // remove follower from profile
       profile.following = profile.following.filter(
-        (follower) => follower.id !== followerId
+        (follower) => follower.id !== followingId
       );
+
+      followingProfile.followers = followingProfile.followers.filter(
+        (follower) => follower.id !== profile.id
+      );
+
+      await followingProfile.save();      
       await profile.save();
       return {
-        message: `Successfully unfollow ${followerProfile.firstName}`,
+        message: `Successfully unfollow ${followingProfile.firstName}`,
         hasError: false,
         statusCode: 200,
         data: null,

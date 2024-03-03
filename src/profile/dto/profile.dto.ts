@@ -22,9 +22,18 @@ export class ProfileResDto {
     this.lastName = p.lastName || "";
     this.email = email || "";
     this.gender = p?.gender || "";
-    this.followers = p?.followers || [];
-    this.following = p?.following || [];
-    this.friends = p?.friends || [];
+    this.followers =
+      p?.followers.map((x) => {
+        return { id: x.id, firstName: x.firstName};
+      }) || [];
+    this.following =
+      p?.following.map((x) => {
+        return { id: x.id, firstName: x.firstName};
+      }) || [];
+    this.friends =
+      p?.friends.map((x) => {
+        return { id: x.id, firstName: x.firstName};
+      }) || [];
     this.stats = {
       totalFollowers: p?.followers?.length || 0,
       totalFollowing: p?.following?.length || 0,
