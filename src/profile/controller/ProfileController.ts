@@ -29,6 +29,23 @@ ProfileController.put('/', async (req, res) => {
 })
 
 
+// add as friend user
+ProfileController.post('/addfriend', async (req, res) => {
+    const userId = req.app.locals?.userID
+    const friendId = req.query?.friendId;
+    if(!userId) {
+        ResponseService.send({ data: null, message: 'Permission denied', response: res, statusCode: 401 });
+        return;
+    }
+    if(!friendId) {
+        ResponseService.send({ data: null, message: 'Friend user id is required', response: res, statusCode: 400 });
+        return;
+    }
+    const { data, message, statusCode, hasError } = await ProfileService.addUserToFriends(userId, friendId as any);
+    ResponseService.send({ data, message, response: res, statusCode, hasError });
+    return;
+})
+
 // follow user
 ProfileController.post('/follow', async (req, res) => {
     const userId = req.app.locals?.userID
